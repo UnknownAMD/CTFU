@@ -14,11 +14,8 @@ namespace CTFAK.CCN.Chunks.Objects
         public int flags;
 
         public SubApplication(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
+        { 
+        } 
         public override void Read()
         {
             width = reader.ReadInt32();
