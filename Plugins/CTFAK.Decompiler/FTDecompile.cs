@@ -215,7 +215,21 @@ namespace CTFAK.Tools
                 if (newItem.Loader == null)
                 {
                     Logger.LogWarning("NOT IMPLEMENTED OBJECT: " + newItem.ObjectType);
-                    continue;
+                    if (newItem.ObjectType == 9)
+                    {
+                        if (Core.parameters.Contains("-nosubapp"))
+                        {
+
+                        }
+                        else
+                        {
+                            FrameItems.Add(newItem.Handle, newItem);
+                        }
+                    }
+                    else
+                    {
+                        FrameItems.Add(newItem.Handle, newItem);
+                    }
                 }
                 else
                 {
@@ -1301,11 +1315,19 @@ namespace CTFAK.Tools
                             newSubApp.Qualifiers = newObject.Qualifiers;
                             try
                             {
-                                newSubApp.FrameNumber = itemLoader.SubApplication.FrameNumber;
+                                newSubApp.fileNameMORELIKEUNKNOWNINT = 0;
+                                newSubApp.width = itemLoader.SubApplication.width;
+                                newSubApp.height = itemLoader.SubApplication.height;
+                                newSubApp.flaggyflag = itemLoader.SubApplication.flags;
+                                newSubApp.frameNum = itemLoader.SubApplication.FrameNumber;
                             }
                             catch (Exception)
                             {
-                                newSubApp.FrameNumber = 1;
+                                newSubApp.fileNameMORELIKEUNKNOWNINT = 0;
+                                newSubApp.width = 128;
+                                newSubApp.height = 128;
+                                newSubApp.flaggyflag = 0;
+                                newSubApp.frameNum = 3;
                             }
                             newItem.Loader = newSubApp;
                         }
