@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ApplicationIcon>CTFAK2.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+	<ProjectReference Include="..\..\Core\CTFAK.Core\CTFAKCore.csproj" />
+	<ProjectReference Include="..\..\Plugins\CTFAK.Decompiler\CTFAK.Decompiler.csproj" />
+	<ProjectReference Include="..\..\Plugins\EventPreprocessor\EventPreprocessor.csproj" />
+		<ProjectReference Include="..\..\MFAViewer\MFAViewer.csproj" />
+    </ItemGroup>
+
+</Project>
