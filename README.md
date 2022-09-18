@@ -1,7 +1,7 @@
-# CTFUCK2.0
+# CTFU-2.0
 Updated version of the Clickteam Fusion Army Knife Decompiler
 
-THIS WAS ORIGINALLY MADE BY @1987kostya!! I USED CTFAK 2.0 2.5+ PATCH AS BASE!!!
+THIS WAS ORIGINALLY MADE BY @1987kostya and @lily-snow-9!!
 
 
 This new version of ctfak includes:
