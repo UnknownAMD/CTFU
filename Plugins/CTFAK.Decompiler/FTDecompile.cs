@@ -1319,6 +1319,7 @@ namespace CTFAK.Tools
                                 newSubApp.width = itemLoader.SubApplication.width;
                                 newSubApp.height = itemLoader.SubApplication.height;
                                 newSubApp.flaggyflag = itemLoader.SubApplication.flags;
+                                //newSubApp.flaggyflag = 1;
                                 newSubApp.frameNum = itemLoader.SubApplication.FrameNumber;
                             }
                             catch (Exception)

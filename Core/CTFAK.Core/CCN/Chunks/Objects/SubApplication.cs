@@ -20,8 +20,8 @@ namespace CTFAK.CCN.Chunks.Objects
         {
             width = reader.ReadInt32();
             height = reader.ReadInt32();
-            FrameNumber = reader.ReadInt16();
             flags = reader.ReadInt32();
+            FrameNumber = reader.ReadInt16();
         }
 
         public override void Write(ByteWriter Writer)
