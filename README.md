@@ -1,5 +1,5 @@
 # CTFU
-Updated version of the Clickteam Fusion Army Knife Decompiler
+Updated version of the Clickteam Fusion UCK Decompiler
 
 THIS WAS ORIGINALLY MADE BY @1987kostya and @lily-snow-9!!
 
