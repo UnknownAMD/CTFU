@@ -1,4 +1,4 @@
-# CTFU-2.0
+# CTFU
 Updated version of the Clickteam Fusion Army Knife Decompiler
 
 THIS WAS ORIGINALLY MADE BY @1987kostya and @lily-snow-9!!
