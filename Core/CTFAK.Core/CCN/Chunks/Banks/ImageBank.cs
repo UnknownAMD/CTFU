@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -17,8 +16,7 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public static event Core.SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
-        public ImageBank(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             if (Core.parameters.Contains("-noimg")) return;
 
@@ -28,8 +26,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 var count = reader.ReadInt16();
                 for (int i = 0; i < count; i++)
                 {
-                    var newImg = new Image(reader);
-                    newImg.Read();
+                    var newImg = new Image();
+                    newImg.Read(reader);
                     Items.Add(newImg.Handle, newImg);
                 }
             }
@@ -39,8 +37,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 for (int i = 0; i < count; i++)
                 {
                     
-                    var newImg = new Image(reader);
-                    newImg.Read();
+                    var newImg = new Image();
+                    newImg.Read(reader);
                     OnImageLoaded?.Invoke(i,count);
                     Items.Add(newImg.Handle, newImg);
                 }
@@ -143,10 +141,10 @@ namespace CTFAK.CCN.Chunks.Banks
                         Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
 
                     realBitmap.UnlockBits(bmpData);
-                    //realBitmap.Save($"Images/{Handle}.png");
-                    //Logger.Log("Trying again");
-
-
+                    //realBitmap.Save($"Images\\{Handle}.png");
+                        //Logger.Log("Trying again");
+                    
+                    
                 }
                 return realBitmap;
 
@@ -158,67 +156,67 @@ namespace CTFAK.CCN.Chunks.Banks
                 width = bmp.Width;
                 height = bmp.Height;
                 Flags["Alpha"] = false;
-                graphicMode = 4;
+            graphicMode = 4;
 
-                var bitmapData = bmp.LockBits(new Rectangle(0, 0,
+            var bitmapData = bmp.LockBits(new Rectangle(0, 0,
+                    bmp.Width,
+                    bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int copyPad = GetPadding(width, 4);
+            var length = bitmapData.Height * bitmapData.Stride+copyPad*4;
+
+            byte[] bytes = new byte[length];
+            int stride = bitmapData.Stride;
+            // Copy bitmap to byte[]
+            Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
+            bmp.UnlockBits(bitmapData);
+
+            
+            
+            imageData = new byte[width * height * 6];
+            int position = 0;
+            int pad = GetPadding(width, 3);
+            
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int newPos = (y * stride) + (x*3);
+                    imageData[position] = bytes[newPos];
+                    imageData[position + 1] = bytes[newPos + 1];
+                    imageData[position + 2] = bytes[newPos + 2];
+                    position += 3;
+                }
+
+                position += 3 * pad;
+            }
+
+            try
+            {
+                var bitmapDataAlpha = bmp.LockBits(new Rectangle(0, 0,
                         bmp.Width,
                         bmp.Height),
                     ImageLockMode.ReadOnly,
-                    PixelFormat.Format24bppRgb);
-                int copyPad = GetPadding(width, 4);
-                var length = bitmapData.Height * bitmapData.Stride + copyPad * 4;
+                    PixelFormat.Format32bppArgb);
+                int copyPadAlpha = GetPadding(width, 1);
+                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
 
-                byte[] bytes = new byte[length];
-                int stride = bitmapData.Stride;
+                byte[] bytesAlpha = new byte[lengthAlpha];
+                int strideAlpha = bitmapDataAlpha.Stride;
                 // Copy bitmap to byte[]
-                Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
-                bmp.UnlockBits(bitmapData);
+                Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
+                bmp.UnlockBits(bitmapDataAlpha);
 
-
-
-                imageData = new byte[width * height * 6];
-                int position = 0;
-                int pad = GetPadding(width, 3);
-
+                int aPad = GetPadding(width, 1, 4);
+                int alphaPos = position;
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        int newPos = (y * stride) + (x * 3);
-                        imageData[position] = bytes[newPos];
-                        imageData[position + 1] = bytes[newPos + 1];
-                        imageData[position + 2] = bytes[newPos + 2];
-                        position += 3;
+                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
+                        alphaPos += 1;
                     }
-
-                    position += 3 * pad;
-                }
-
-                try
-                {
-                    var bitmapDataAlpha = bmp.LockBits(new Rectangle(0, 0,
-                            bmp.Width,
-                            bmp.Height),
-                        ImageLockMode.ReadOnly,
-                        PixelFormat.Format32bppArgb);
-                    int copyPadAlpha = GetPadding(width, 1);
-                    var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
-
-                    byte[] bytesAlpha = new byte[lengthAlpha];
-                    int strideAlpha = bitmapDataAlpha.Stride;
-                    // Copy bitmap to byte[]
-                    Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
-                    bmp.UnlockBits(bitmapDataAlpha);
-
-                    int aPad = GetPadding(width, 1, 4);
-                    int alphaPos = position;
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
-                            alphaPos += 1;
-                        }
 
                         alphaPos += aPad;
                     }
@@ -262,13 +260,10 @@ namespace CTFAK.CCN.Chunks.Banks
         public int transparent;
         
 
-        public Image(ByteReader reader):base(reader)
-        {
 
-        }
 
         public static List<Task> imageReadingTasks = new List<Task>();
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             if (Settings.twofiveplus&&!IsMFA)
             {
@@ -300,7 +295,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 imageData = target;
                 graphicMode = 16;
                 var bmp = bitmap;
-                var newImg = new Image(null);
+                var newImg = new Image();
                 newImg.FromBitmap(bmp);
                 imageData = newImg.imageData;
                 graphicMode = 4;

@@ -27,7 +27,7 @@ namespace CTFAK.CCN.Chunks
         public ChunkFlags Flag;
         public int Size;
 
-        public byte[] Read()
+        public byte[] Read(ByteReader reader)
         {
             Id = reader.ReadInt16();
             
