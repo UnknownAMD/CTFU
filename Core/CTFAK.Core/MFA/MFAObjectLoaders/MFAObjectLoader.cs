@@ -31,7 +31,14 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
             for (int i = 0; i < 8; i++)
             {
-                Writer.WriteInt16(Qualifiers[i]);
+                try
+                {
+                    Writer.WriteInt16(Qualifiers[i]);
+                }
+                catch(Exception)
+                {
+                    Writer.WriteInt16(0);
+                }
             }
             Writer.WriteInt16(-1);
             Values.Write(Writer);

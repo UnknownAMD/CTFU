@@ -18,6 +18,7 @@ namespace CTFAK.CCN.Chunks.Objects
         private uint _fadeinOffset;
         private uint _fadeoutOffset;
         private short _movementsOffset;
+        private short _subAppOffset;
         private short _animationsOffset;
         private short _systemObjectOffset;
         private short _counterOffset;
@@ -140,7 +141,8 @@ namespace CTFAK.CCN.Chunks.Objects
                 var version = reader.ReadInt16();
                 _counterOffset = reader.ReadInt16();
                 _systemObjectOffset = reader.ReadInt16();
-                reader.Skip(2);
+                reader.Skip(1);
+                _subAppOffset = reader.ReadInt16();
                 Flags.flag = reader.ReadUInt16();
                 var penisFlags = reader.ReadInt16();
                 //reader.Skip(2);
@@ -379,6 +381,13 @@ namespace CTFAK.CCN.Chunks.Objects
                 reader.Seek(currentPosition + _counterOffset);
                 Counter = new Counter(reader);
                 Counter.Read();
+            }
+
+            if (_subAppOffset > 0)
+            {
+                reader.Seek(currentPosition + _counterOffset);
+                SubApplication = new SubApplication(reader);
+                SubApplication.Read();
             }
         }
 
